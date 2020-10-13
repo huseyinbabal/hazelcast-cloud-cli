@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"github.com/hazelcast/hazelcast-cloud-cli/internal"
+	"github.com/hazelcast/hazelcast-cloud-cli/util"
 	"github.com/spf13/cobra"
 )
 
@@ -24,6 +25,9 @@ var versionUpdateCmd = &cobra.Command{
 }
 
 func init() {
+	if util.IsCloudShell() {
+		return
+	}
 	rootCmd.AddCommand(versionCmd)
 	versionCmd.AddCommand(versionUpdateCmd)
 }

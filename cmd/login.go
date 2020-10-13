@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"github.com/hazelcast/hazelcast-cloud-cli/internal"
+	"github.com/hazelcast/hazelcast-cloud-cli/util"
 	"github.com/spf13/cobra"
 )
 
@@ -25,6 +26,9 @@ var loginCmd = &cobra.Command{
 }
 
 func init() {
+	if util.IsCloudShell() {
+		return
+	}
 	rootCmd.AddCommand(loginCmd)
 	loginCmd.Flags().StringVar(&apiKey, "api-key", "", "api key of your accunt")
 	loginCmd.Flags().StringVar(&apiKey, "api-secret", "", "api secret of your account")
