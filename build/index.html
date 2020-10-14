@@ -6,7 +6,6 @@
 </head>
 <body>
 <pre id="console">Welcome to Hazelcast Cloud Shell!<br></pre>
-<div id="loading" style="display: none"></div>
 <div id="prompt">
     <div id="prompt-start"><span style="color:greenyellow">yunus@hzcloud</span><span>:</span><span
                 style="color:dodgerblue">~</span><span>$</span></div><span id="test"></span>
@@ -17,7 +16,6 @@
     let bashHistoryIndex = 0;
     let bashHistory = [""];
     consoleObj = document.getElementById("console")
-    loadingObj = document.getElementById("loading")
     promptStart = document.getElementById("prompt-start")
     promptObj = document.getElementById("prompt")
     inputObj = document.getElementById("input")
@@ -26,7 +24,7 @@
         inputObj.addEventListener('keydown', function (event) {
             if (event.code === "ArrowUp") {
                 this.value = bashHistory[bashHistoryIndex]
-                if (bashHistoryIndex !== 0) {
+                if (bashHistoryIndex !== 1) {
                     bashHistoryIndex--;
                 }
                 return;
@@ -51,41 +49,37 @@
 
             consoleObj.append(promptStart.cloneNode(true))
             consoleObj.append(" " + this.value + "\n")
+
             bashHistory.push(this.value)
             bashHistoryIndex = bashHistory.length - 1
 
             this.value = '';
-            loadingObj.style.display = "block"
             promptObj.style.display = "none"
 
             const decoder = new TextDecoder("utf-8");
             global.fs.writeSync = function (fd, buf) {
-                consoleObj.innerHTML += new AnsiUp().ansi_to_html(decoder.decode(buf))
+                let decodedText = decoder.decode(buf);
+                if (decodedText.includes("[K")) {
+                    let splitArray = consoleObj.innerHTML.split('\n');
+                    splitArray.pop()
+                    consoleObj.innerHTML = splitArray.join('\n');
+                }
+                consoleObj.innerHTML += new AnsiUp().ansi_to_html(decodedText)
                 return buf.length;
             };
 
             WebAssembly.instantiate(bin, go.importObject).then((result) => {
                 go.run(result.instance).then(x => {
                     promptObj.style.display = "block"
-                    loadingObj.style.display = "none"
                     consoleObj.scrollTop = consoleObj.scrollHeight;
                     inputObj.focus()
                 });
             });
         });
-        document.addEventListener("click", function () {
+        inputObj.addEventListener("click", function () {
             inputObj.focus()
         })
     });
-
-    var i = 0;
-    setInterval(function() {
-        const spinner = "⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏"
-        if (loadingObj.style.display !== "none") {
-            loadingObj.innerHTML = spinner[i] + " Loading";
-            i = (i + 1) % spinner.length;
-        }
-    }, 100);
 </script>
 
 <style>
