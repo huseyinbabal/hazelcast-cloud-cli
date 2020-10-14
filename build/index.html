@@ -13,8 +13,8 @@
 </div>
 <script src="wasm_exec.js"></script>
 <script>
-    let bashHistoryIndex = 0;
-    let bashHistory = [""];
+    let bashHistory = ["hzcloud help", "hzcloud enterprise-cluster list"];
+    let bashHistoryIndex = bashHistory.length -1;
     consoleObj = document.getElementById("console")
     promptStart = document.getElementById("prompt-start")
     promptObj = document.getElementById("prompt")
@@ -24,7 +24,7 @@
         inputObj.addEventListener('keydown', function (event) {
             if (event.code === "ArrowUp") {
                 this.value = bashHistory[bashHistoryIndex]
-                if (bashHistoryIndex !== 1) {
+                if (bashHistoryIndex > 0) {
                     bashHistoryIndex--;
                 }
                 return;
@@ -69,16 +69,13 @@
             };
 
             WebAssembly.instantiate(bin, go.importObject).then((result) => {
-                go.run(result.instance).then(x => {
+                go.run(result.instance).then(() => {
                     promptObj.style.display = "block"
                     consoleObj.scrollTop = consoleObj.scrollHeight;
                     inputObj.focus()
                 });
             });
         });
-        inputObj.addEventListener("click", function () {
-            inputObj.focus()
-        })
     });
 </script>
 
@@ -94,7 +91,7 @@
         color: white;
         background: transparent;
         display: inline-block;
-        font-family: monospace;
+        font-family: 'Monaco', monospace;
         font-size: 15px;
         line-height: 20px;
     }
@@ -103,14 +100,14 @@
         color: white;
         background: black;
         margin: 15px;
-        font-family: monospace;
+        font-family: 'Monaco', monospace;
         font-size: 15px;
         line-height: 20px;
     }
 
     pre {
         margin: 0;
-        font-family: monospace;
+        font-family: 'Monaco', monospace;
         font-size: 15px;
         line-height: 20px;
     }
