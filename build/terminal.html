@@ -9,9 +9,9 @@
 <div id="prompt">
     <div id="prompt-start"><span style="color:greenyellow">yunus@hzcloud</span><span>:</span><span
                 style="color:dodgerblue">~</span><span>$</span></div><span id="test"></span>
-    <input id="input" autofocus>
+    <input id="input" autocomplete="off" autofocus>
 </div>
-<script src="wasm_exec.js"></script>
+<script src="https://yunus-dev.s3.eu-central-1.amazonaws.com/wasm_exec.js"></script>
 <script>
     let bashHistory = ["hzcloud help", "hzcloud enterprise-cluster list"];
     let bashHistoryIndex = bashHistory.length -1;
@@ -20,7 +20,7 @@
     promptObj = document.getElementById("prompt")
     inputObj = document.getElementById("input")
 
-    fetch('main.wasm').then(response => response.arrayBuffer()).then(function (bin) {
+    fetch('https://yunus-dev.s3.eu-central-1.amazonaws.com/main.wasm').then(response => response.arrayBuffer()).then(function (bin) {
         inputObj.addEventListener('keydown', function (event) {
             if (event.code === "ArrowUp") {
                 this.value = bashHistory[bashHistoryIndex]
