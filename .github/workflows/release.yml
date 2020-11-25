@@ -93,21 +93,12 @@ jobs:
     runs-on: ubuntu-latest
     needs: release
     steps:
-      - uses: mislav/bump-homebrew-formula-action@v1
-        with:
-          formula-name: hzcloud
-          homebrew-tap: ${{ env.organization }}/homebrew-hz
-          base-branch: master
-          download-url: https://github.com/${{ env.organization }}/hazelcast-cloud-cli/archive/${{ needs.release.outputs.version }}.tar.gz
-          commit-message: Release ${{ needs.release.outputs.version }}
-        env:
-          COMMITTER_TOKEN: ${{ secrets.HZ_CLOUD_GITHUB_TOKEN }}
       - name: Bump Brew
-          env:
-            HOMEBREW_GITHUB_API_TOKEN: ${{ secrets.HZ_CLOUD_GITHUB_TOKEN }}
-          run: |
-            brew tap {{ env.organization }}/homebrew-hz
-            brew bump-formula-pr -f --version=${{ needs.release.outputs.version }} --no-browse --no-audit \
-            --sha256=${{ needs.release.outputs.sha }} \
-            --url="https://github.com/${{ env.organization }}/hazelcast-cloud-cli/archive/${{ needs.release.outputs.version }}.tar.gz" \
-            {{ env.organization }}/homebrew-hz/hzcloud
+        env:
+          HOMEBREW_GITHUB_API_TOKEN: ${{ secrets.HZ_CLOUD_GITHUB_TOKEN }}
+        run: |
+          brew tap {{ env.organization }}/homebrew-hz
+          brew bump-formula-pr -f --version=${{ needs.release.outputs.version }} --no-browse --no-audit \
+          --sha256=${{ needs.release.outputs.sha }} \
+          --url="https://github.com/${{ env.organization }}/hazelcast-cloud-cli/archive/${{ needs.release.outputs.version }}.tar.gz" \
+          {{ env.organization }}/homebrew-hz/hzcloud
