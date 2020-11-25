@@ -34,7 +34,6 @@ jobs:
           draft: false
           prerelease: true
 
-
   build:
     name: Build ${{ matrix.goos }}-${{ matrix.goarch }}
     runs-on: ${{ matrix.os }}
@@ -92,7 +91,7 @@ jobs:
     runs-on: macos-10.15
     needs: release
     steps:
-      - name: Bump Brew
+      - name: Update Homebrew Formula
         env:
           HOMEBREW_GITHUB_API_TOKEN: ${{ secrets.HZ_CLOUD_GITHUB_TOKEN }}
         run: |
