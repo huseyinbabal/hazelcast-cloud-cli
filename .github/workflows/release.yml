@@ -96,9 +96,10 @@ jobs:
       - name: Bump Brew
         env:
           HOMEBREW_GITHUB_API_TOKEN: ${{ secrets.HZ_CLOUD_GITHUB_TOKEN }}
+          SHA256: ${{ github.event.client_payload.sha256 }}
         run: |
           brew tap ${{ env.organization }}/homebrew-hz
           brew bump-formula-pr -f --no-browse --no-audit \
-          --sha256=${{ needs.release.outputs.checksum }} \
+          --sha256 "$SHA256" \
           --url="https://github.com/${{ env.organization }}/hazelcast-cloud-cli/archive/${{ needs.release.outputs.version }}.tar.gz" \
           ${{ env.organization }}/homebrew-hz/hzcloud
