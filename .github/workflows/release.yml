@@ -19,7 +19,9 @@ jobs:
       version: ${{ steps.resolve_release.outputs.version }}
       checksum: ${{ steps.resolve_checksum.outputs.sha }}
     steps:
-      - name: Create
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Create Release
         id: create_release
         uses: actions/create-release@v1
         env:
@@ -34,7 +36,9 @@ jobs:
         run: echo ::set-output name=version::${GITHUB_REF#refs/tags/}
       - name: Resolve Checksum
         id: resolve_checksum
-        run: echo ::set-output name=sha::"$(shasum -a 256 ./target/release/${GITHUB_REF#refs/tags/}.tar.gz | awk '{printf $1}')"
+        run: |
+        tar -zcvf /tmp/build.tar.gz .
+        ::set-output name=sha::"$(shasum -a 256 ./tmp/build.tar.gz | awk '{printf $1}')"
 
   build:
     name: Build ${{ matrix.goos }}-${{ matrix.goarch }}
@@ -96,10 +100,9 @@ jobs:
       - name: Bump Brew
         env:
           HOMEBREW_GITHUB_API_TOKEN: ${{ secrets.HZ_CLOUD_GITHUB_TOKEN }}
-          SHA256: ${{ github.event.client_payload.sha256 }}
         run: |
           brew tap ${{ env.organization }}/homebrew-hz
           brew bump-formula-pr -f --no-browse --no-audit \
-          --sha256 "$SHA256" \
+          --sha256 "${{ needs.release.outputs.checksum }}" \
           --url="https://github.com/${{ env.organization }}/hazelcast-cloud-cli/archive/${{ needs.release.outputs.version }}.tar.gz" \
           ${{ env.organization }}/homebrew-hz/hzcloud
