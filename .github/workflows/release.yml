@@ -21,14 +21,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        run: tar -zcvf /tmp/build.tar.gz .
       - name: Resolve Version
         id: resolve_release
         run: echo ::set-output name=version::${GITHUB_REF#refs/tags/}
       - name: Resolve Checksum
         id: resolve_checksum
-        run: |
-          tar -zcvf /tmp/build.tar.gz .
-          echo ::set-output name=sha::"$(shasum -a 256 ./tmp/build.tar.gz | awk '{printf $1}')"
+        run: echo ::set-output name=sha::"$(shasum -a 256 /tmp/build.tar.gz | awk '{printf $1}')"
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
