@@ -28,7 +28,7 @@ jobs:
         id: resolve_checksum
         run: |
           tar -zcvf /tmp/build.tar.gz .
-          ::set-output name=sha::"$(shasum -a 256 ./tmp/build.tar.gz | awk '{printf $1}')"
+          echo ::set-output name=sha::"$(shasum -a 256 ./tmp/build.tar.gz | awk '{printf $1}')"
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
