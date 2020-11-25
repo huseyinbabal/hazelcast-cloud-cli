@@ -1,7 +1,7 @@
 name: Release
 
 env:
-  organization: 'hazelcast'
+  organization: 'yunussandikci'
   go_version: '^1.15'
 
 on:
@@ -92,7 +92,7 @@ jobs:
       - uses: mislav/bump-homebrew-formula-action@v1
         with:
           formula-name: hzcloud
-          homebrew-tap: ${{ env.organization }}/homebrew-hzcloud
+          homebrew-tap: ${{ env.organization }}/homebrew-hz
           base-branch: master
           download-url: https://github.com/${{ env.organization }}/hazelcast-cloud-cli/archive/${{ needs.release.outputs.version }}.tar.gz
           commit-message: Release ${{ needs.release.outputs.version }}
