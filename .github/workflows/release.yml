@@ -34,7 +34,7 @@ jobs:
         run: echo ::set-output name=version::${GITHUB_REF#refs/tags/}
       - name: Resolve Checksum
         id: resolve_checksum
-        run: echo ::set-output name=sha::"$(shasum -a 256 ./target/${GITHUB_REF#refs/tags/}.tar.gz | awk '{printf $1}')"
+        run: echo ::set-output name=sha::"$(shasum -a 256 ./target/release/${GITHUB_REF#refs/tags/}.tar.gz | awk '{printf $1}')"
 
   build:
     name: Build ${{ matrix.goos }}-${{ matrix.goarch }}
