@@ -17,7 +17,7 @@ jobs:
       id: ${{ steps.create_release.outputs.release_id }}
       upload_url: ${{ steps.create_release.outputs.upload_url }}
       version: ${{ steps.resolve_release.outputs.version }}
-      sha: ${{ steps.resolve_sha.outputs.sha }}
+      checksum: ${{ steps.resolve_checksum.outputs.sha }}
     steps:
       - name: Create
         id: create_release
@@ -32,9 +32,9 @@ jobs:
       - name: Resolve Version
         id: resolve_release
         run: echo ::set-output name=version::${GITHUB_REF#refs/tags/}
-      - name: Resolve SHA
-        id: resolve_sha
-        run: echo ::set-output name=sha::"$(shasum -a 256 ./${{ steps.resolve_release.outputs.version }}.tar.gz | awk '{printf $1}')"
+      - name: Resolve Checksum
+        id: resolve_checksum
+        run: echo ::set-output name=sha::"$(shasum -a 256 ./target/${GITHUB_REF#refs/tags/}.tar.gz | awk '{printf $1}')"
 
   build:
     name: Build ${{ matrix.goos }}-${{ matrix.goarch }}
@@ -98,7 +98,7 @@ jobs:
           HOMEBREW_GITHUB_API_TOKEN: ${{ secrets.HZ_CLOUD_GITHUB_TOKEN }}
         run: |
           brew tap ${{ env.organization }}/homebrew-hz
-          brew bump-formula-pr -f --version=${{ needs.release.outputs.version }} --no-browse --no-audit \
-          --sha256=${{ needs.release.outputs.sha }} \
+          brew bump-formula-pr -f --no-browse --no-audit \
+          --sha256=${{ needs.release.outputs.checksum }} \
           --url="https://github.com/${{ env.organization }}/hazelcast-cloud-cli/archive/${{ needs.release.outputs.version }}.tar.gz" \
           ${{ env.organization }}/homebrew-hz/hzcloud
