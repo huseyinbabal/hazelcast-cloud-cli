@@ -33,9 +33,8 @@ jobs:
         id: resolve_release
         run: echo ::set-output name=version::${GITHUB_REF#refs/tags/}
       - name: Resolve SHA
-          id: resolve_sha
-          run: |
-            echo ::set-output name=sha::"$(shasum -a 256 ./${{ steps.resolve_release.outputs.version }}.tar.gz | awk '{printf $1}')"
+        id: resolve_sha
+        run: echo ::set-output name=sha::"$(shasum -a 256 ./${{ steps.resolve_release.outputs.version }}.tar.gz | awk '{printf $1}')"
 
   build:
     name: Build ${{ matrix.goos }}-${{ matrix.goarch }}
