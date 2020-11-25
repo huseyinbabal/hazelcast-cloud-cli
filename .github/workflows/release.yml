@@ -18,12 +18,7 @@ jobs:
       upload_url: ${{ steps.create_release.outputs.upload_url }}
       version: ${{ steps.resolve_release.outputs.version }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Resolve Version
-        id: resolve_release
-        run: echo ::set-output name=version::${GITHUB_REF#refs/tags/}
-      - name: Create Release
+      - name: Create
         id: create_release
         uses: actions/create-release@v1
         env:
@@ -33,6 +28,9 @@ jobs:
           release_name: Release ${{ github.ref }}
           draft: false
           prerelease: true
+      - name: Resolve
+        id: resolve_release
+        run: echo ::set-output name=version::${GITHUB_REF#refs/tags/}
 
   build:
     name: Build ${{ matrix.goos }}-${{ matrix.goarch }}
